@@ -1,0 +1,26 @@
+
+> temp-app@0.1.0 build
+> next build
+
+Γû▓ Next.js 16.1.6 (Turbopack)
+- Environments: .env
+
+ΓÜá The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+Γ£ô Compiled successfully in 8.3s
+  Running TypeScript ...
+Failed to compile.
+
+./src/app/admin/tables/page.tsx:73:58
+Type error: Type '{ floor: { id: number; name: string; }; _count: { reservations: number; }; } & { id: string; name: string; capacity: number; floorId: number; positionX: number; positionY: number; isAvailable: boolean; }' is not assignable to type 'TableData'.
+  Types of property 'floor' are incompatible.
+    Type '{ id: number; name: string; }' is not assignable to type 'number'.
+
+  71 |                                 <TableCell className="text-right">
+  72 |                                     <div className="flex justify-end gap-2">
+> 73 |                                         <EditTableButton table={table} floors={floors} />
+     |                                                          ^
+  74 |                                         <DeleteTableButton id={table.id} name={table.name} />
+  75 |                                     </div>
+  76 |                                 </TableCell>
+Next.js build worker exited with code: 1 and signal: null
