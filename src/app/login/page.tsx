@@ -65,11 +65,11 @@ export default function LoginPage() {
                         {loading ? "Signing in..." : "Sign In"}
                     </Button>
 
-                    <div className="text-xs text-center text-gray-500 mt-4 space-y-1">
+                    {/* <div className="text-xs text-center text-gray-500 mt-4 space-y-1">
                         <p className="font-medium text-gray-400">Demo Credentials</p>
                         <p>Admin: admin / admin</p>
                         <p>Receptionist: receptionist / receptionist</p>
-                    </div>
+                    </div> */}
                 </form>
             </div>
         </div>
