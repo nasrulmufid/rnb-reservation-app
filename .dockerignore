@@ -10,4 +10,7 @@ README.md
 .env.*
 !.env.production
 .vscode
-build_error.log
+*.log
+*.tar
+prisma/dev.db
+data

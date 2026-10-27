@@ -127,35 +127,60 @@ docker exec -it nama-container sqlite3 /app/data/prod.db
 
 ---
 
-## 🔄 Docker Compose (Optional)
+## 🔄 Docker Compose (Recommended)
 
-Jika ingin menggunakan docker-compose (lebih mudah):
+Project ini sudah punya `docker-compose.yml` (port host **3001**, named volume, healthcheck):
 
-**docker-compose.yml**:
+```powershell
+# Build & start (background)
+docker compose up -d --build
+
+# Lihat status & health
+docker compose ps
+
+# Lihat logs
+docker compose logs -f app
+
+# Stop
+docker compose down
+
+# Stop + hapus volume (HAPUS database!)
+docker compose down -v
+```
+
+Isi `docker-compose.yml`:
 ```yaml
-version: '3.8'
-
 services:
   app:
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: aplikasi-reservasi:latest
-    ports:
-      - "3000:3000"
-    environment:
-      - DATABASE_URL=file:./data/prod.db
-      - NODE_ENV=production
-      - SECURE_COOKIES=false
-      - NEXT_PUBLIC_API_URL=http://localhost:3000
-    volumes:
-      - ./data:/app/data  # Persist database
+    container_name: aplikasi-reservasi
     restart: unless-stopped
+    ports:
+      - "3001:3000"   # host:container (3000 dipakai container lain di mesin ini)
+    environment:
+      DATABASE_URL: "file:/app/data/prod.db"
+      NODE_ENV: production
+      SECURE_COOKIES: "false"
+      NEXT_PUBLIC_API_URL: "http://localhost:3001"
+    volumes:
+      - sqlite_data:/app/data   # persistensi SQLite
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/ >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+volumes:
+  sqlite_data:
 ```
 
-Jalankan dengan:
-```powershell
-docker-compose up -d
-docker-compose logs -f
-docker-compose down
-```
+Akses: `http://localhost:3001` — login `admin`/`admin` atau `receptionist`/`receptionist`.
+
+**Catatan**: Saat container start, entrypoint otomatis menjalankan `prisma migrate deploy` + seed (upsert, aman dijalankan berulang). Database tersimpan di named volume `sqlite_data`, jadi data bertahan antar restart/rebuild container.
 
 ---
 

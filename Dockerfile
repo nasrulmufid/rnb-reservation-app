@@ -3,7 +3,8 @@ FROM node:20-alpine AS base
 # Install dependencies only when needed
 FROM base AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat openssl
+# Use HTTP repos as workaround for TLS interception (packages still verified by apk signatures)
+RUN sed -i 's/https/http/g' /etc/apk/repositories && apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
@@ -21,6 +22,10 @@ ENV DATABASE_URL="file:./dev.db"
 
 # Generate prisma client
 RUN npx prisma generate
+
+# Create build-time database with tables so static generation can query it
+# (prisma/dev.db is excluded from build context via .dockerignore)
+RUN npx prisma migrate deploy && npm run db:seed || echo "⚠️  build-time seed skipped"
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
@@ -61,6 +66,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/package-lock.json* ./
 COPY --chown=nextjs:nodejs docker-entrypoint.sh /app/docker-entrypoint.sh
 RUN chmod +x /app/docker-entrypoint.sh
 
+# Create persistent data directory for SQLite (owned by nextjs user)
+# Named volumes inherit this ownership on first mount
+RUN mkdir -p /app/data && chown -R nextjs:nodejs /app/data
+
 USER nextjs
 
 EXPOSE 3000
@@ -70,7 +79,8 @@ ENV HOSTNAME="0.0.0.0"
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 # Default DATABASE_URL for SQLite (can be overridden at runtime)
-ENV DATABASE_URL="file:./data/prod.db"
+# Absolute path ensures the file lives in the mounted volume (/app/data)
+ENV DATABASE_URL="file:/app/data/prod.db"
 # Cookie security: set to false for HTTP localhost, true for HTTPS production
 ENV SECURE_COOKIES="false"
 # Next.js API URL (can be overridden at runtime for different domains)

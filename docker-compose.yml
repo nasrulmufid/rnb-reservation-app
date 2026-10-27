@@ -1,0 +1,30 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: aplikasi-reservasi:latest
+    container_name: aplikasi-reservasi
+    restart: unless-stopped
+    ports:
+      # Host port 3001 (3000 is used by another local container); change as needed
+      - "3001:3000"
+    environment:
+      # SQLite database inside the named volume (persistent)
+      DATABASE_URL: "file:/app/data/prod.db"
+      NODE_ENV: production
+      # false = HTTP (localhost/dev), true = HTTPS (production behind proxy)
+      SECURE_COOKIES: "false"
+      NEXT_PUBLIC_API_URL: "http://localhost:3001"
+    volumes:
+      # Persist SQLite database across container restarts/rebuilds
+      - sqlite_data:/app/data
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/ >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+volumes:
+  sqlite_data:
