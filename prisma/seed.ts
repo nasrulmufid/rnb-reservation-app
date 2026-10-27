@@ -118,7 +118,19 @@ async function main() {
         await prisma.reservation.upsert({
             where: { reservationNo: r.reservationNo },
             update: {},
-            create: r,
+            create: {
+                reservationNo: r.reservationNo,
+                date: r.date,
+                time: r.time,
+                pax: r.pax,
+                status: r.status,
+                remarks: r.remarks,
+                customerId: r.customerId,
+                createdById: r.createdById,
+                tables: r.tableId ? {
+                    create: [{ tableId: r.tableId }],
+                } : undefined,
+            },
         });
     }
     console.log("✅ Reservations created:", reservationData.length);

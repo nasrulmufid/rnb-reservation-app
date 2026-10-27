@@ -23,16 +23,24 @@ export async function login(formData: FormData) {
 
     // Set role cookie for middleware
     const cookieStore = await cookies();
+    
+    // Determine if we should set secure flag
+    // Use secure only in production AND when accessed via HTTPS
+    // For Docker development on localhost:3000 (HTTP), we need secure: false
+    const isSecure = process.env.NODE_ENV === "production" && 
+                    (process.env.SECURE_COOKIES === "true" || 
+                     process.env.NEXTAUTH_URL?.startsWith("https://"));
+    
     cookieStore.set("role", user.role, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: isSecure,
         sameSite: "lax",
         path: "/",
         maxAge: 60 * 60 * 24, // 24 hours
     });
     cookieStore.set("userId", user.id, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: isSecure,
         sameSite: "lax",
         path: "/",
         maxAge: 60 * 60 * 24,

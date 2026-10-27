@@ -10,12 +10,22 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "R&B Grill Palembang — Reservation System",
   description: "Luxury restaurant reservation management system for R&B Grill Palembang",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "R&B Grill",
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
+  themeColor: "#09090b",
 };
 
 export default function RootLayout({
