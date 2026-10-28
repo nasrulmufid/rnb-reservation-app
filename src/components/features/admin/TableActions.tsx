@@ -92,7 +92,7 @@ export function AddTableButton({ floors }: { floors: { id: number; name: string 
                             >
                                 {floors.map((floor) => (
                                     <option key={floor.id} value={floor.id}>
-                                        {floor.name} (Floor {floor.id})
+                                        {floor.name}
                                     </option>
                                 ))}
                             </select>
@@ -187,7 +187,7 @@ export function EditTableButton({ table, floors }: { table: TableData; floors: {
                             >
                                 {floors.map((floor) => (
                                     <option key={floor.id} value={floor.id}>
-                                        {floor.name} (Floor {floor.id})
+                                        {floor.name}
                                     </option>
                                 ))}
                             </select>
