@@ -6,6 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { Shield, ShieldAlert, User as UserIcon } from "lucide-react";
 
+// Always render fresh data from the DB (never cache at build time)
+export const dynamic = "force-dynamic";
+
 export default async function AdminUsersPage() {
     const { success, data: users } = await getUsers();
 

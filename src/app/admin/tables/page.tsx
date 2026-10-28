@@ -7,6 +7,9 @@ import { AddTableButton, EditTableButton, DeleteTableButton } from "@/components
 import { TableImportButton } from "@/components/features/admin/TableImport";
 import { FloorManager } from "@/components/features/admin/FloorManager";
 
+// Always render fresh data from the DB (never cache at build time)
+export const dynamic = "force-dynamic";
+
 export default async function AdminTablesPage() {
     const [tables, floors] = await Promise.all([
         prisma.table.findMany({

@@ -2,6 +2,9 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import EditReservationForm from "./form";
 
+// Always render fresh data from the DB (never cache at build time)
+export const dynamic = "force-dynamic";
+
 export default async function EditReservationPage({
     params,
 }: {

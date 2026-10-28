@@ -2,6 +2,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { prisma } from "@/lib/prisma";
 import { UserCircle2 } from "lucide-react";
 
+// Always render fresh data from the DB (never cache at build time)
+export const dynamic = "force-dynamic";
+
 export default async function AdminLogsPage() {
     const logs = await prisma.systemLog.findMany({
         take: 50,
