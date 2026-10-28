@@ -5,6 +5,8 @@ import { Users, Utensils, CalendarCheck, ChevronRight, Clock, MapPin, AlertCircl
 
 export const dynamic = "force-dynamic";
 
+export const dynamic = "force-dynamic";
+
 export default async function ReceptionistDashboard() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);

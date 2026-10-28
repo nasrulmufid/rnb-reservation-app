@@ -94,8 +94,10 @@ export async function createReservation(data: CreateReservationData) {
 
         revalidatePath("/receptionist/reservations");
         revalidatePath("/receptionist/dashboard");
+        revalidatePath("/receptionist/customers");
         revalidatePath("/admin/reservations");
         revalidatePath("/admin/dashboard");
+        revalidatePath("/admin/customers");
 
         return { success: true, data: reservation };
     } catch (error) {
@@ -220,8 +222,10 @@ export async function updateReservation(id: string, data: CreateReservationData)
 
         revalidatePath("/receptionist/reservations");
         revalidatePath("/receptionist/dashboard");
+        revalidatePath("/receptionist/customers");
         revalidatePath("/admin/reservations");
         revalidatePath("/admin/dashboard");
+        revalidatePath("/admin/customers");
 
         return { success: true, data: reservation };
     } catch (error) {

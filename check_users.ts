@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 async function main() {
     const users = await prisma.user.findMany();
     console.log("Current Users in DB:");
-    users.forEach(u => console.log(`${u.username}: ${u.id}`));
+    users.forEach((u: { username: string; id: string }) => console.log(`${u.username}: ${u.id}`));
 }
 
 main()

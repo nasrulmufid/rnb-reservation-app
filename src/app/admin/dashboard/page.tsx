@@ -4,6 +4,9 @@ import { Users, CalendarCheck, TrendingUp, TrendingDown, Armchair, AlertTriangle
 import WeeklyChart from "./WeeklyChart";
 import { cn } from "@/lib/utils";
 
+// Always render fresh data from the DB (never cache at build time)
+export const dynamic = "force-dynamic";
+
 export default async function AdminDashboardPage() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);

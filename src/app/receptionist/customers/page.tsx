@@ -5,6 +5,9 @@ import { cn } from "@/lib/utils";
 import AddGuestForm from "@/components/features/receptionist/AddGuestForm";
 import CustomerListClient from "./CustomerListClient";
 
+// Always render fresh data from the DB (never cache at build time)
+export const dynamic = "force-dynamic";
+
 export default async function CustomerListPage() {
     const customersData = await prisma.customer.findMany({
         include: {

@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/prisma";
 import { Crown, Download } from "lucide-react";
 
+// Always render fresh data from the DB (never cache at build time)
+export const dynamic = "force-dynamic";
+
 export default async function AdminCustomersPage() {
     const customers = await prisma.customer.findMany({
         orderBy: { visitCount: "desc" },

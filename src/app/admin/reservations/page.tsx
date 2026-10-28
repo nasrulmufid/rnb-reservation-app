@@ -7,6 +7,9 @@ import Link from "next/link";
 import StatusChanger from "@/components/features/StatusChanger";
 import ReservationFilter from "@/components/features/ReservationFilter";
 
+// Always render fresh data from the DB (never cache at build time)
+export const dynamic = "force-dynamic";
+
 export default async function AdminReservationsPage({
     searchParams,
 }: {
