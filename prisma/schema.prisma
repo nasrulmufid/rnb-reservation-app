@@ -71,6 +71,20 @@ model Reservation {
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
   deletedAt     DateTime?
+  
+  attachments   ReservationAttachment[]
+}
+
+model ReservationAttachment {
+  id            String   @id @default(cuid())
+  reservationId String
+  reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+  fileName      String // Original file name (for display/download)
+  storedName    String @unique // Name on disk (e.g. <cuid>.<ext>) to prevent path traversal
+  mimeType      String
+  size          Int // bytes
+  description   String?
+  createdAt     DateTime @default(now())
 }
 
 model ReservationTable {

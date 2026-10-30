@@ -16,7 +16,17 @@ export default async function EditReservationPage({
         where: { id },
         include: {
             customer: true,
-            tables: { select: { tableId: true } }
+            tables: { select: { tableId: true } },
+            attachments: {
+                select: {
+                    id: true,
+                    fileName: true,
+                    mimeType: true,
+                    size: true,
+                    description: true,
+                },
+                orderBy: { createdAt: "asc" },
+            },
         },
     });
 

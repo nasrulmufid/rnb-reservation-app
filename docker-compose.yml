@@ -16,8 +16,10 @@ services:
       # false = HTTP (localhost/dev), true = HTTPS (production behind proxy)
       SECURE_COOKIES: "false"
       NEXT_PUBLIC_API_URL: "http://localhost:3001"
+      # Attachment uploads directory (inside the persistent volume)
+      UPLOAD_DIR: "/app/data/uploads"
     volumes:
-      # Persist SQLite database across container restarts/rebuilds
+      # Persist SQLite database and attachment uploads across restarts/rebuilds
       - sqlite_data:/app/data
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/ >/dev/null 2>&1 || exit 1"]

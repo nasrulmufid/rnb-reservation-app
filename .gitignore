@@ -37,6 +37,9 @@ yarn-error.log*
 # docker backup files (too large for git)
 *.tar
 
+# uploaded attachment files (bukti transfer DP, etc.)
+/data/uploads
+
 # local build logs
 build_*.log
 

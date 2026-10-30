@@ -18,6 +18,7 @@ import { ArrowLeft, MapPin, Trophy, User, Check, AlertTriangle } from "lucide-re
 import Link from "next/link";
 import { createReservation } from "@/actions/reservations";
 import { cn } from "@/lib/utils";
+import AttachmentManager from "@/components/features/AttachmentManager";
 
 type CustomerSuggestion = {
     id: string;
@@ -35,6 +36,7 @@ export default function NewReservationPage() {
     const [selectedTableIds, setSelectedTableIds] = useState<string[]>([]);
     const [pastDateWarning, setPastDateWarning] = useState(false);
     const [pendingFormData, setPendingFormData] = useState<FormData | null>(null);
+    const [pendingFiles, setPendingFiles] = useState<File[]>([]);
 
     const now = new Date();
     const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
@@ -138,6 +140,18 @@ export default function NewReservationPage() {
         });
 
         if (result.success) {
+            // Upload any pending attachment files to the newly created reservation
+            const newId = (result.data as { id?: string } | undefined)?.id;
+            if (pendingFiles.length > 0 && newId) {
+                try {
+                    const fd = new FormData();
+                    fd.append("reservationId", newId);
+                    pendingFiles.forEach((f) => fd.append("files", f));
+                    await fetch("/api/attachments", { method: "POST", body: fd });
+                } catch {
+                    // Non-blocking: reservation is created, attachment upload failure is tolerable
+                }
+            }
             router.push("/receptionist/reservations");
         } else {
             setError(result.error || "Failed to create reservation");
@@ -365,6 +379,10 @@ export default function NewReservationPage() {
                             <label className="text-xs text-muted-foreground mb-1 block">Remarks</label>
                             <Input name="remarks" placeholder="Special requests, birthday, etc." />
                         </div>
+                        <AttachmentManager
+                            reservationId=""
+                            onPendingFilesChange={setPendingFiles}
+                        />
                     </CardContent>
                 </Card>
 

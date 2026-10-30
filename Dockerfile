@@ -66,9 +66,9 @@ COPY --from=builder --chown=nextjs:nodejs /app/package-lock.json* ./
 COPY --chown=nextjs:nodejs docker-entrypoint.sh /app/docker-entrypoint.sh
 RUN chmod +x /app/docker-entrypoint.sh
 
-# Create persistent data directory for SQLite (owned by nextjs user)
+# Create persistent data directory for SQLite and attachment uploads (owned by nextjs user)
 # Named volumes inherit this ownership on first mount
-RUN mkdir -p /app/data && chown -R nextjs:nodejs /app/data
+RUN mkdir -p /app/data/uploads && chown -R nextjs:nodejs /app/data
 
 USER nextjs
 

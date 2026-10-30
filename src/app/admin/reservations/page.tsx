@@ -6,6 +6,7 @@ import { Clock, Search } from "lucide-react";
 import Link from "next/link";
 import StatusChanger from "@/components/features/StatusChanger";
 import ReservationFilter from "@/components/features/ReservationFilter";
+import AttachmentBadge from "@/components/features/AttachmentBadge";
 
 // Always render fresh data from the DB (never cache at build time)
 export const dynamic = "force-dynamic";
@@ -34,7 +35,21 @@ export default async function AdminReservationsPage({
             ...(activeFilter ? { status: activeFilter as any } : {}),
             ...dateWhere,
         },
-        include: { customer: true, tables: { include: { table: true } } },
+        include: {
+            customer: true,
+            tables: { include: { table: true } },
+            attachments: {
+                select: {
+                    id: true,
+                    fileName: true,
+                    mimeType: true,
+                    size: true,
+                    description: true,
+                    createdAt: true,
+                },
+                orderBy: { createdAt: "asc" },
+            },
+        },
         orderBy: [{ date: "desc" }, { time: "asc" }],
         take: 50,
     });
@@ -90,6 +105,13 @@ export default async function AdminReservationsPage({
                                                 Note: {res.remarks}
                                             </div>
                                         )}
+                                        <AttachmentBadge
+                                            reservationId={res.id}
+                                            attachments={res.attachments}
+                                            customerName={res.customer.name}
+                                            reservationNo={res.reservationNo}
+                                            variant="block"
+                                        />
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center gap-2">

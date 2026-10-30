@@ -18,6 +18,7 @@ import { ArrowLeft, MapPin, Trophy, User, Check, AlertTriangle } from "lucide-re
 import Link from "next/link";
 import { updateReservation } from "@/actions/reservations";
 import { cn } from "@/lib/utils";
+import AttachmentManager, { type AttachmentItem } from "@/components/features/AttachmentManager";
 
 type CustomerSuggestion = {
     id: string;
@@ -40,6 +41,7 @@ interface EditReservationFormProps {
         };
         status: string;
         tables: { tableId: string }[];
+        attachments: AttachmentItem[];
     };
 }
 
@@ -47,7 +49,7 @@ export default function EditReservationForm({ initialData }: EditReservationForm
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [tables, setTables] = useState<{ id: string; name: string; capacity: number; floor: number; isBooked?: boolean; conflictReason?: string }[]>([]);
+    const [tables, setTables] = useState<{ id: string; name: string; capacity: number; floor: number; floorName?: string; isBooked?: boolean; conflictReason?: string }[]>([]);
 
     // Initialize state from props
     const [selectedTableIds, setSelectedTableIds] = useState<string[]>(initialData.tables.map(t => t.tableId));
@@ -390,7 +392,7 @@ export default function EditReservationForm({ initialData }: EditReservationForm
                                                     {isBooked ? (
                                                         <span className="text-red-500/80 truncate block max-w-[100px]">{t.conflictReason?.replace("Booked at ", "")}</span>
                                                     ) : (
-                                                        `Cap: ${t.capacity} · F${t.floor}`
+                                                        `Cap: ${t.capacity} · ${t.floorName || `F${t.floor}`}`
                                                     )}
                                                 </div>
                                             </div>
@@ -406,6 +408,11 @@ export default function EditReservationForm({ initialData }: EditReservationForm
                             <label className="text-xs text-muted-foreground mb-1 block">Remarks</label>
                             <Input name="remarks" placeholder="Special requests, birthday, etc." defaultValue={initialData.remarks || ""} disabled={isLocked} />
                         </div>
+                        <AttachmentManager
+                            reservationId={initialData.id}
+                            initialAttachments={initialData.attachments}
+                            readOnly={isLocked}
+                        />
                     </CardContent>
                 </Card>
 

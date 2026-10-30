@@ -4,6 +4,7 @@ import { Phone, Clock, Users, Hash, CalendarDays, Pencil } from "lucide-react";
 import Link from "next/link";
 import StatusChanger from "@/components/features/StatusChanger";
 import ReservationFilter from "@/components/features/ReservationFilter";
+import AttachmentBadge from "@/components/features/AttachmentBadge";
 
 // Always render fresh data from the DB (never cache at build time)
 export const dynamic = "force-dynamic";
@@ -32,7 +33,21 @@ export default async function ReservationListPage({
             ...(activeFilter ? { status: activeFilter as any } : {}),
             ...dateWhere,
         },
-        include: { customer: true, tables: { include: { table: true } } },
+        include: {
+            customer: true,
+            tables: { include: { table: true } },
+            attachments: {
+                select: {
+                    id: true,
+                    fileName: true,
+                    mimeType: true,
+                    size: true,
+                    description: true,
+                    createdAt: true,
+                },
+                orderBy: { createdAt: "asc" },
+            },
+        },
         orderBy: { createdAt: "desc" },
         take: 50,
     });
@@ -77,6 +92,12 @@ export default async function ReservationListPage({
                                         <span className="flex items-center gap-1"><Phone size={10} /> {res.customer.phone}</span>
                                         <span className="flex items-center gap-1"><Clock size={10} /> {res.time}</span>
                                         <span className="flex items-center gap-1"><Users size={10} /> {res.pax}</span>
+                                        <AttachmentBadge
+                                            reservationId={res.id}
+                                            attachments={res.attachments}
+                                            customerName={res.customer.name}
+                                            reservationNo={res.reservationNo}
+                                        />
                                     </div>
                                     {res.remarks && (
                                         <div className="text-xs  text-red-500 bg-muted/50 p-1.5 rounded text-muted-foreground italic border border-border/50">
